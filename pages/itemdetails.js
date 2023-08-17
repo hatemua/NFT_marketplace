@@ -81,6 +81,49 @@ const ItemDetails = () => {
     console.log(router)
     const [TokenLabel,setTokenLabel] = useState("");
     console.log(query.isPayble);
+
+    
+    const unlist = async() =>{
+        console.log(rpc);
+        const provider= new ethers.providers.JsonRpcProvider(rpc);
+        var web3 = new Web3(new Web3.providers.HttpProvider(rpc));
+  
+        const gazfees= await provider.getFeeData();
+        console.log(gazfees.maxPriorityFeePerGas.toString())
+        console.log(gazfees.maxFeePerGas.toString())
+        const val = query.price;
+  const nftContract = await new web3.eth.Contract(BullscMarket, marketplaceAddress);
+   //set up your Ethereum transaction
+    const transactionParameters = {
+        to: marketplaceAddress, // Required except during contract publications.
+        from: window.ethereum.selectedAddress, // must match user's active address.
+    //gasLimit: web3.utils.toHex(web3.utils.toWei('50','gwei')),  
+    //gasPrice: web3.utils.toHex(web3.utils.toWei('60','gwei')), 
+        // maxPriorityFeePerGas: web3.utils.toHex(gazfees.maxPriorityFeePerGas.toString()),
+        // maxFeePerGas: web3.utils.toHex(gazfees.maxFeePerGas.toString()),
+        gas: ethers.BigNumber.from(300000).toHexString(),
+        'data': nftContract.methods.ulisting(query.contactAddr,query.itemID).encodeABI(), //make call to NFT smart contract 
+    };
+    console.log(transactionParameters)
+    //sign transaction via Metamask
+    try {
+        const txHash = await window.ethereum.request({
+                method: 'eth_sendTransaction',
+                params: [transactionParameters],
+            });
+        // console.log(txHash);
+        return {
+            success: true,
+            status: "✅ Check out your transaction on Etherscan: " + txHash
+        }
+    } catch (error) {
+        return {
+            success: false,
+            status: "😥 Something went wrong: " + error.message
+        }
+    }
+      
+   }
    const buyToken = async() =>{
         console.log(rpc);
         const provider= new ethers.providers.JsonRpcProvider(rpc);
@@ -371,6 +414,9 @@ const ItemDetails = () => {
                             </div>
                             <div className="buying-btns d-flex flex-wrap">
                                 <div className="default-btn move-right" onClick={() => buyToken()}><span>Buy Now</span> </div>
+                            </div>
+                            <div className="buying-btns d-flex flex-wrap">
+                                <div className="default-btn move-right" onClick={() => unlist()}><span>Unlist</span> </div>
                             </div>
                         </div>
                     </div>

@@ -378,7 +378,7 @@ export default function Sell() {
       console.log(rpc);
       const provider= new ethers.providers.JsonRpcProvider(rpc);
       var web3 = new Web3(new Web3.providers.HttpProvider(rpc));
-      const val= Number(0.0125 * 1e18).toString(16);
+      const val= Number(0.025 * 1e18).toString(16);
       const pricing = Token == "0" ? (parseFloat(price)* 1e18).toString(16) : (parseFloat(price)* 10**18).toString()   ;
 console.log(pricing)
       const fee = Number(0.0125 * 1e18).toString(16);

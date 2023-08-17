@@ -97,6 +97,7 @@ const Author = () => {
   const [avatar, setAvatar] = useState(AuthorInfo.profileImage);
 
   const getAvatar = async () => {
+    console.log(userConnected);
     const { data, error } = await supabase
       .from("User")
       .select("photo")
@@ -180,6 +181,7 @@ const Author = () => {
       router.push("/wallet");
     }
     console.log(address);
+    
     getSimpleHash(address);
     getAvatar();
   }, [loading]);
